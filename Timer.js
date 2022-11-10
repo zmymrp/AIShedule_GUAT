@@ -89,7 +89,7 @@ async function scheduleTimer(
 		let dqzs = Number(dqjxz[1]);
 		if(dqzs > 0){
 			// 获取第几周前的今天的时间戳
-			let tmp_time = now.getTime() - (86400000 * (dqjxz[1] - 1) * 7)
+			let tmp_time = now.getTime() - (86400000 * (dqzs - 1) * 7)
 			// 今天是星期几，0为星期天
 			if(now.getDay() == 0){
 				tmp_time -= 86400000 * 6
