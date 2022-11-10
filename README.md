@@ -1,5 +1,6 @@
 # AIShedule_GUAT
 小米小爱课程表桂林航天工业学院导入脚本
+
 需要配合开发“[小爱课程表开发者工具](https://open-schedule-prod.ai.xiaomi.com/docs/#/help/)”使用
 
 ## 更新日志
