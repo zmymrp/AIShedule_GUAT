@@ -87,11 +87,7 @@ async function scheduleTimer(
 		// 当前时间
 		let now = new Date();
 		let dqzs = Number(dqjxz[1]);
-		// 如果当前为第一周
-		if(dqzs == 1){
-			dqzs++
-		}
-		if(dqzs > 1){
+		if(dqzs > 0){
 			// 获取第几周前的今天的时间戳
 			let tmp_time = now.getTime() - (86400000 * (dqjxz[1] - 1) * 7)
 			// 今天是星期几，0为星期天
