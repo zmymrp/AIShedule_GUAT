@@ -210,6 +210,9 @@ async function scheduleHtmlProvider(
 		  'utf-8',
 		  '/http/77726476706e69737468656265737421a1a70fcd696126012f/frame/home/homepage.jsp'
 		)
+		if(!userConfrim){
+			homepage = '';
+		}
 		return JSON.stringify({
 			times: times,
 			homepage: homepage,
