@@ -1,6 +1,17 @@
 function scheduleHtmlParser(html) {
 	// 按逗号拆分为数组，即1,3-5转为[1,3,4,5]，返回空数组则拆分失败
 	let split_comma = function(str){
+		let tmp = -1;
+		if(str.endsWith(' ')) {
+			console.log(str)
+			if(str.endsWith(' 单 ')){
+				str = str.substr(0, str.length - 3);
+				tmp = 1;
+			} else if(str.endsWith(' 双 ')){
+				str = str.substr(0, str.length - 3);
+				tmp = 0;
+			}
+		}
 		// 如果传参不为string则直接返回空数组
 		if(typeof(str) != 'string') return [];
 		let aa = [];
@@ -12,7 +23,13 @@ function scheduleHtmlParser(html) {
 			// 如果结果大于2个元素则遍历元素1到元素2之间的值加入数组，否则直接加入
 			if(a12.length >= 2){
 				for(let num = Number(a12[0]);num <= Number(a12[1]);num++){
-					aa.push(num);
+					if(tmp == -1) {
+						aa.push(num);
+					} else {
+						if((num % 2) == tmp){
+							aa.push(num);
+						}
+					}
 				}
 			}else{
 				aa.push(Number(a12[0]));
