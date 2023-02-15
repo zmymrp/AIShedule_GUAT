@@ -127,13 +127,46 @@ async function scheduleHtmlProvider(
 		let info = JSON.parse(
 			await request('get', 'utf-8', '/http/77726476706e69737468656265737421a1a70fcd696126012f/jw/common/showYearTerm.action')
 		)
+		let params = 'xn=' + info.xn + '&xq=' + info.xqM + '&xh=' + info.userCode;
+		const userConfrim = await AIScheduleConfirm({
+			titleText: '测试功能',
+			contentText: '该功能可以导入教务系统中的任意学期课表，但上课时间可能不准确，请谨慎使用！',
+			cancelText: '选择学期',
+			confirmText: '当前学期',
+		});
+		if(!userConfrim){
+			let test = JSON.parse(
+				await request('get', 'utf-8', '/http/77726476706e69737468656265737421a1a70fcd696126012f/frame/droplist/getDropLists.action?comboBoxName=StMsXnxqDxDesc&paramValue')
+			)
+			console.log(test)
+			if(test.length>0){
+				let option = {};
+				let show_option = [];
+				let defaulted = info.xn + '-' + info.xqM;
+				for(i=0;i<test.length;i++){
+					option[test[i].name] = test[i].code;
+					show_option[i] = test[i].name;
+					if(test[i].code == defaulted) {
+						defaulted = test[i].name;
+					}
+				}
+				const userSelect = await AIScheduleSelect({
+				  titleText: '选择学期',
+				  contentText: "请选择需要导入课表的学期\r\n" + defaulted,
+				  selectList: show_option
+				})
+				console.log(userSelect, option[userSelect]);
+				defaulted = option[userSelect].split('-');
+				if(defaulted.length == 2) {
+					params = 'xn=' + defaulted[0] + '&xq=' + defaulted[1] + '&xh=' + info.userCode;
+				}
+			}
+		}
 		let courseTable = await request(
 			'get',
 			'gbk',
 			'/http/77726476706e69737468656265737421a1a70fcd696126012f/student/wsxk.xskcb10319.jsp?params=' +
-			  base64Encode(
-				'xn=' + info.xn + '&xq=' + info.xqM + '&xh=' + info.userCode
-			  )
+			  base64Encode(params)
 		 )
 		dom = new DOMParser().parseFromString(courseTable, 'text/html')
 		console.log(dom)
