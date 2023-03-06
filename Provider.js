@@ -127,10 +127,26 @@ async function scheduleHtmlProvider(
 		let info = JSON.parse(
 			await request('get', 'utf-8', '/http/77726476706e69737468656265737421a1a70fcd696126012f/jw/common/showYearTerm.action')
 		)
+		let homepage = await request(
+		  'get',
+		  'utf-8',
+		  '/http/77726476706e69737468656265737421a1a70fcd696126012f/frame/home/homepage.jsp'
+		)
+		let dqxn = homepage.match(/var.*dqxn.*=.*\"(.*)\";/);
+		if(dqxn != null && dqxn.length == 2){
+			dqxn = dqxn[1];
+			info.xn = dqxn;
+		}
+		let dqxq = homepage.match(/var.*dqxq.*=.*\"(.*)\";/);
+		if(dqxq != null && dqxq.length == 2){
+			dqxq = dqxq[1];
+			info.xqM = dqxq;
+		}
+		console.log({dqxn,dqxq});
 		let params = 'xn=' + info.xn + '&xq=' + info.xqM + '&xh=' + info.userCode;
 		const userConfrim = await AIScheduleConfirm({
 			titleText: '测试功能',
-			contentText: '该功能可以导入教务系统中的任意学期课表，但上课时间可能不准确，请谨慎使用！',
+			contentText: '该功能可以导入教务系统中的任意学期课表，上课时间可能不准确，请谨慎使用！',
 			cancelText: '选择学期',
 			confirmText: '当前学期',
 		});
@@ -205,11 +221,6 @@ async function scheduleHtmlProvider(
 		  }
 		}
 		console.log(times);
-		let homepage = await request(
-		  'get',
-		  'utf-8',
-		  '/http/77726476706e69737468656265737421a1a70fcd696126012f/frame/home/homepage.jsp'
-		)
 		if(!userConfrim){
 			homepage = '';
 		}
