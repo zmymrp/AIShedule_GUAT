@@ -4,6 +4,10 @@
 需要配合开发“[小爱课程表开发者工具](https://open-schedule-prod.ai.xiaomi.com/docs/#/help/)”使用
 
 ## 更新日志
+### Ver6168
+
+  修复当前学期不正确问题
+
 ### Ver5678
 
   导入其它学期的课表
