@@ -4,7 +4,7 @@
 需要配合开发“[小爱课程表开发者工具](https://open-schedule-prod.ai.xiaomi.com/docs/#/help/)”使用
 
 ## 更新日志
-### Ver6168
+### Ver12054
 
   修复导入失败错误代码20
 
