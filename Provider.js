@@ -80,11 +80,11 @@ function IsLogin(){
 	}
 	if(_hostname == '77726476706e69737468656265737421a1a70fcd696126012f'){
 		// 教务系统
-		if(document.location.pathname == '/http/77726476706e69737468656265737421a1a70fcd696126012f/frame/homes.html'){
+		if(document.location.pathname.startsWith('/http/77726476706e69737468656265737421a1a70fcd696126012f/frame/homes')){
 			// 教务系统首页
 			return 0;
 		}
-		if(typeof document.G_USER_LOGINID != 'undefined' && document.G_USER_LOGINID != '' && document.G_USER_LOGINID != null){
+		if(document.G_USER_LOGINID){
 			// 已登录教务系统
 			return 0;
 		}
@@ -142,11 +142,10 @@ async function scheduleHtmlProvider(
 			dqxq = dqxq[1];
 			info.xqM = dqxq;
 		}
-		console.log({dqxn,dqxq});
 		let params = 'xn=' + info.xn + '&xq=' + info.xqM + '&xh=' + info.userCode;
 		const userConfrim = await AIScheduleConfirm({
 			titleText: '测试功能',
-			contentText: '该功能可以导入教务系统中的任意学期课表，上课时间可能不准确，请谨慎使用！',
+			contentText: '该功能可以导入教务系统中的任意学期课表，但上课时间可能不准确，请谨慎使用！',
 			cancelText: '选择学期',
 			confirmText: '当前学期',
 		});
@@ -154,7 +153,6 @@ async function scheduleHtmlProvider(
 			let test = JSON.parse(
 				await request('get', 'utf-8', '/http/77726476706e69737468656265737421a1a70fcd696126012f/frame/droplist/getDropLists.action?comboBoxName=StMsXnxqDxDesc&paramValue')
 			)
-			console.log(test)
 			if(test.length>0){
 				let option = {};
 				let show_option = [];
@@ -171,7 +169,6 @@ async function scheduleHtmlProvider(
 				  contentText: "请选择需要导入课表的学期\r\n" + defaulted,
 				  selectList: show_option
 				})
-				console.log(userSelect, option[userSelect]);
 				defaulted = option[userSelect].split('-');
 				if(defaulted.length == 2) {
 					params = 'xn=' + defaulted[0] + '&xq=' + defaulted[1] + '&xh=' + info.userCode;
@@ -185,9 +182,7 @@ async function scheduleHtmlProvider(
 			  base64Encode(params)
 		 )
 		dom = new DOMParser().parseFromString(courseTable, 'text/html')
-		console.log(dom)
 		let tables = dom.getElementsByTagName('table')
-		console.log(tables)
 		for(i=0;i<tables.length;i++){
 			if(tables[i].id == 'mytable'){
 				dom = tables[i]
@@ -204,7 +199,6 @@ async function scheduleHtmlProvider(
 			'&xq_m=' +
 			info.xqM
 		)
-		console.log(infos)
 		let doms = new DOMParser().parseFromString(infos, 'text/html')
 		let tabs = doms.getElementsByTagName('tbody')[0]
 		let trs = tabs.getElementsByTagName('tr')
@@ -213,14 +207,17 @@ async function scheduleHtmlProvider(
 		  if (Object.hasOwnProperty.call(trs, tr)) {
 			const element = trs[tr]
 			let tds = element.getElementsByTagName('td')
+            let num = 0;
+            if(tds[num].rowSpan>1) {
+                num++;
+            }
 			times.push({
-			  section: tds[0].innerText.replace(/\n|\t/g, ''),
-			  startTime: tds[1].innerText.replace(/\n|\t/g, ''),
-			  endTime: tds[2].innerText.replace(/\n|\t/g, ''),
+			  section: tds[num].innerText.replace(/\n|\t/g, ''),
+			  startTime: tds[++num].innerText.replace(/\n|\t/g, ''),
+			  endTime: tds[++num].innerText.replace(/\n|\t/g, ''),
 			})
 		  }
 		}
-		console.log(times);
 		if(!userConfrim){
 			homepage = '';
 		}
